@@ -211,6 +211,20 @@ where
         });
     }
 
+    // 遍历并输出每个环境变量的键值对
+    // let all_vars = env::vars();
+    // for (key, value) in all_vars {
+    //     println!("env: {}: {}", key, value);
+    // }
+
+    if let (Ok(ndk_sysroot), Ok(target)) = (
+        env::var("CARGO_NDK_SYSROOT_PATH"),
+        env::var("CARGO_NDK_SYSROOT_TARGET"),
+    ) {
+        cflags.push(format!("-I{ndk_sysroot}/usr/include"));
+        cflags.push(format!("-I{ndk_sysroot}/usr/include/{target}"));
+    }
+
     let bindings = bindgen_rs::Builder::default()
         .detect_include_paths(true)
         .clang_arg("-xc")
